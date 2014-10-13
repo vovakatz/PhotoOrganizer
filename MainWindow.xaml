@@ -3,13 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Photo Organizer" Height="350" Width="525">
     <Grid>
-        <Frame Content="" HorizontalAlignment="Left" Height="226" Margin="10,10,0,0" VerticalAlignment="Top" Width="497" BorderThickness="1" BorderBrush="DarkGray"/>
+        <Frame Content="" HorizontalAlignment="Left" Height="120" Margin="10,10,0,0" VerticalAlignment="Top" Width="497" BorderThickness="1" BorderBrush="DarkGray"/>
         <Button Uid="btnSource" Content="Browse" HorizontalAlignment="Left" Margin="408,41,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="1.203,-2.577" Click="btnSource_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="23,22,0,0" TextWrapping="Wrap" Text="Source files directory" VerticalAlignment="Top" Width="355"/>
         <Button Uid="btnDestination" Content="Browse" HorizontalAlignment="Left" Margin="408,97,0,0" VerticalAlignment="Top" Width="75" Click="btnDestination_Click"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="23,94,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="355"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="23,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="355"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="23,94,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="355" Name="txtDestination"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="23,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="355" Name="txtSource"/>
         <TextBlock HorizontalAlignment="Left" Margin="23,77,0,0" TextWrapping="Wrap" Text="Destination directory" VerticalAlignment="Top" Width="355"/>
+        <Frame Content="Group By" HorizontalAlignment="Left" Height="56" Margin="10,135,0,0" VerticalAlignment="Top" Width="172" BorderThickness="1" BorderBrush="DarkGray"/>
+        <RadioButton x:Name="rdlGroupByYear" Content="Year" HorizontalAlignment="Left" Margin="113,166,0,0" VerticalAlignment="Top" GroupName="GroupBy"/>
+        <RadioButton x:Name="rdlGroupByMonth" Content="Month" HorizontalAlignment="Left" Margin="23,166,0,0" VerticalAlignment="Top" GroupName="GroupBy" IsChecked="True"/>
+        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="432,289,0,0" VerticalAlignment="Top" Width="75" Click="btnStart_Click"/>
+        <Frame Content="Copy/Move" HorizontalAlignment="Left" Height="56" Margin="199,135,0,0" VerticalAlignment="Top" Width="308" BorderThickness="1" BorderBrush="DarkGray"/>
+        <RadioButton x:Name="rdlCopy" Content="Copy" HorizontalAlignment="Left" Margin="213,166,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <RadioButton x:Name="rdlMove" Content="Move" HorizontalAlignment="Left" Margin="297,166,0,0" VerticalAlignment="Top"/>
 
 
 
