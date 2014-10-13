@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +23,38 @@ namespace PhotoOrganizer
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void btnSource_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog();
+        }
+
+        private void btnDestination_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog();
+        }
+
+        private void OpenFileDialog()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".jpg";
+            //dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+                //bt.Text = filename;
+            }
         }
     }
 }
