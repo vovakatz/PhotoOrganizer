@@ -54,6 +54,7 @@ namespace PhotoOrganizer
                 // Open document 
                 string filename = dlg.FileName;
                 //bt.Text = filename;
+                string test = "";"
             }
         }
     }
