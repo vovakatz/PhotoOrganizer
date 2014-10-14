@@ -101,6 +101,7 @@ namespace PhotoOrganizer
             {
                 return false;
             }
+            //returns true
             return true;
         }
     }
