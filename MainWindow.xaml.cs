@@ -112,7 +112,6 @@ namespace PhotoOrganizer
                     RotateImage(image);
                     PropertyItem propertyItem = image.GetPropertyItem(36867);
 
-
                     ASCIIEncoding encoding = new ASCIIEncoding();
                     string text = encoding.GetString(propertyItem.Value, 0, propertyItem.Len - 1);
 
