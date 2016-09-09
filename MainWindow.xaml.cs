@@ -13,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Globalization;
+using System.ComponentModel;
 
 namespace PhotoOrganizer
 {
@@ -21,6 +26,8 @@ namespace PhotoOrganizer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BackgroundWorker backgroundWorker;
+
         private string SourceDirectory
         {
             get
@@ -40,6 +47,17 @@ namespace PhotoOrganizer
         public MainWindow()
         {
             InitializeComponent();
+            backgroundWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+
+            backgroundWorker.DoWork += backgroundWorker_DoWork;
+            //For the display of operation progress to UI.    
+            backgroundWorker.ProgressChanged += backgroundWorker_ProgressChanged;
+            //After the completation of operation.    
+            backgroundWorker.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
         }
 
         private void btnSource_Click(object sender, RoutedEventArgs e)
@@ -70,24 +88,98 @@ namespace PhotoOrganizer
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            btnStart.IsEnabled = false;
             if (ValidateInput())
             {
-                string [] files = Directory.GetFiles(txtSource.Text.Trim(), "*.*", SearchOption.AllDirectories);
+                WorkProps props = new WorkProps();
+                props.SourceFolder = txtSource.Text.Trim();
+                props.DestinationFolder = txtDestination.Text.Trim();
+                props.IsByMonth = rdlGroupByMonth.IsChecked.Value;
+                backgroundWorker.RunWorkerAsync(props);
+            }
+        }
 
-                foreach (string file in files)
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            WorkProps props = (WorkProps)e.Argument;
+
+            string[] files = Directory.GetFiles(props.SourceFolder, "*.*", SearchOption.AllDirectories);
+
+            for (int i = 0; i < files.Count(); i++)
+            {
+                using (System.Drawing.Image image = new Bitmap(files[i]))
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    string folderName = fileInfo.LastWriteTime.Year.ToString();
-                    if (rdlGroupByMonth.IsChecked.Value)
+                    RotateImage(image);
+                    PropertyItem propertyItem = image.GetPropertyItem(36867);
+
+
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    string text = encoding.GetString(propertyItem.Value, 0, propertyItem.Len - 1);
+
+                    // Parse the date and time. 
+                    CultureInfo provider = CultureInfo.InvariantCulture;
+                    DateTime dateTaken = DateTime.ParseExact(text, "yyyy:MM:d H:m:s", provider);
+
+                    FileInfo fileInfo = new FileInfo(files[i]);
+                    string folderName = dateTaken.Year.ToString();
+                    if (props.IsByMonth)
                     {
-                        folderName = fileInfo.LastWriteTime.ToString("MMMM") + " " + folderName;
+                        folderName = dateTaken.ToString("MMMM") + " " + folderName;
                     }
-                    if (!Directory.Exists(DestinationDirectory + "/" + folderName))
+                    if (!Directory.Exists(props.DestinationFolder + "/" + folderName))
                     {
-                        Directory.CreateDirectory(DestinationDirectory + "/" + folderName);
+                        Directory.CreateDirectory(props.DestinationFolder + "/" + folderName);
                     }
-                    fileInfo.CopyTo(DestinationDirectory + "/" + folderName + "/" + fileInfo.Name, true);
+                    fileInfo.CopyTo(props.DestinationFolder + "/" + folderName + "/" + fileInfo.Name, true);
                 }
+                backgroundWorker.ReportProgress(i * 100 / files.Count());
+            }
+        }
+
+        void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            prgProgress.Value = e.ProgressPercentage;
+        }
+
+        void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnStart.IsEnabled = true;
+        }
+
+        private void RotateImage(System.Drawing.Image img)
+        {
+            if (Array.IndexOf(img.PropertyIdList, 274) > -1)
+            {
+                var orientation = (int)img.GetPropertyItem(274).Value[0];
+                switch (orientation)
+                {
+                    case 1:
+                        // No rotation required.
+                        return;
+                    case 2:
+                        img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        break;
+                    case 3:
+                        img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case 4:
+                        img.RotateFlip(RotateFlipType.Rotate180FlipX);
+                        break;
+                    case 5:
+                        img.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        break;
+                    case 6:
+                        img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case 7:
+                        img.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        break;
+                    case 8:
+                        img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                }
+                // This EXIF data is now invalid and should be removed.
+                img.RemovePropertyItem(274);
             }
         }
 

@@ -17,6 +17,7 @@
         <Frame Content="Copy/Move" HorizontalAlignment="Left" Height="56" Margin="199,135,0,0" VerticalAlignment="Top" Width="308" BorderThickness="1" BorderBrush="DarkGray"/>
         <RadioButton x:Name="rdlCopy" Content="Copy" HorizontalAlignment="Left" Margin="213,166,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <RadioButton x:Name="rdlMove" Content="Move" HorizontalAlignment="Left" Margin="297,166,0,0" VerticalAlignment="Top"/>
+        <ProgressBar x:Name="prgProgress" HorizontalAlignment="Left" Height="17" Margin="10,240,0,0" VerticalAlignment="Top" Width="497"/>
 
 
 
